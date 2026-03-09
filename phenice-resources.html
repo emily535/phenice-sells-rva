@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resources & Client Portal | Phenice Boykins · Richmond VA REALTOR®</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #080808;
+  --white: #fdfcf8;
+  --gold: #b8975a;
+  --gold-light: #d4b87a;
+  --gold-pale: rgba(184,151,90,0.10);
+  --charcoal: #141414;
+  --surface: #1a1a1a;
+  --surface2: #222;
+  --muted: rgba(253,252,248,0.50);
+  --border: rgba(184,151,90,0.18);
+  --border2: rgba(255,255,255,0.06);
+  --green: #4caf7d;
+  --blue: #5a9ae0;
+  --red: #e05a5a;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--black); color:var(--white); font-family:'Jost',sans-serif; font-size:15px; line-height:1.65; }
+
+/* NAV */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  background:rgba(8,8,8,0.96); backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  padding:14px 40px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.nav-logo { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--white); text-decoration:none; }
+.nav-logo span { color:var(--gold); }
+.nav-tabs { display:flex; gap:4px; }
+.nav-tab { padding:8px 16px; font-size:0.75rem; letter-spacing:0.06em; color:var(--muted); cursor:pointer; border:1px solid transparent; transition:all 0.15s; border-radius:2px; }
+.nav-tab:hover { color:var(--white); border-color:var(--border2); }
+.nav-tab.active { color:var(--gold); border-color:var(--border); background:var(--gold-pale); }
+.nav-back { font-size:0.75rem; color:var(--muted); text-decoration:none; letter-spacing:0.06em; transition:color 0.15s; }
+.nav-back:hover { color:var(--gold); }
+
+/* PANELS */
+.panel { display:none; padding:90px 40px 60px; min-height:100vh; }
+.panel.active { display:block; }
+
+/* SHARED */
+.section-header { max-width:760px; margin:0 auto 48px; text-align:center; }
+.eyebrow { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; display:flex; align-items:center; justify-content:center; gap:12px; }
+.eyebrow::before,.eyebrow::after { content:''; width:24px; height:1px; background:var(--gold); display:inline-block; }
+.section-header h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,4vw,3rem); font-weight:400; line-height:1.12; margin-bottom:14px; }
+.section-header h1 em { font-style:italic; color:var(--gold); }
+.section-header p { color:var(--muted); font-size:0.92rem; line-height:1.75; }
+
+/* ══════════════════════════════
+   BLOG
+══════════════════════════════ */
+.blog-layout { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 320px; gap:40px; }
+
+.blog-filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:32px; max-width:760px; }
+.blog-filter { padding:7px 16px; border:1px solid var(--border2); background:var(--charcoal); color:var(--muted); font-size:0.76rem; cursor:pointer; transition:all 0.15s; border-radius:2px; }
+.blog-filter:hover { border-color:var(--border); color:var(--white); }
+.blog-filter.active { border-color:var(--gold); color:var(--gold); background:var(--gold-pale); }
+
+.blog-grid { display:flex; flex-direction:column; gap:0; }
+.blog-card { display:grid; grid-template-columns:200px 1fr; border:1px solid var(--border2); margin-bottom:16px; transition:border-color 0.2s; cursor:pointer; }
+.blog-card:hover { border-color:var(--border); }
+.blog-card-img { background:var(--charcoal); display:flex; align-items:center; justify-content:center; font-size:2.5rem; min-height:160px; }
+.blog-card-body { padding:22px 26px; }
+.blog-category { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+.blog-title { font-family:'Cormorant Garamond',serif; font-size:1.25rem; font-weight:600; line-height:1.3; margin-bottom:10px; color:var(--white); }
+.blog-excerpt { font-size:0.83rem; color:var(--muted); line-height:1.65; margin-bottom:14px; }
+.blog-meta { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--muted); display:flex; gap:16px; }
+.blog-read-btn { display:inline-block; margin-top:10px; padding:7px 16px; border:1px solid var(--border); color:var(--gold); font-size:0.73rem; letter-spacing:0.08em; cursor:pointer; transition:all 0.15s; }
+.blog-read-btn:hover { background:var(--gold-pale); }
+
+/* BLOG SIDEBAR */
+.blog-sidebar { display:flex; flex-direction:column; gap:20px; }
+.sidebar-card { background:var(--charcoal); border:1px solid var(--border2); padding:24px; }
+.sidebar-card-title { font-family:'Cormorant Garamond',serif; font-size:1rem; font-weight:600; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--border2); }
+.sidebar-stat { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border2); font-size:0.82rem; }
+.sidebar-stat:last-child { border-bottom:none; }
+.sidebar-stat-label { color:var(--muted); }
+.sidebar-stat-value { color:var(--gold); font-weight:600; font-family:'Cormorant Garamond',serif; font-size:1rem; }
+.newsletter-input { width:100%; background:var(--surface2); border:1px solid var(--border2); color:var(--white); padding:10px 14px; font-family:'Jost',sans-serif; font-size:0.85rem; outline:none; margin-bottom:10px; }
+.newsletter-input:focus { border-color:var(--gold); }
+.newsletter-input::placeholder { color:var(--muted); }
+.newsletter-btn { width:100%; background:var(--gold); border:none; color:var(--black); padding:11px; font-family:'Jost',sans-serif; font-size:0.76rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:background 0.15s; }
+.newsletter-btn:hover { background:var(--gold-light); }
+
+/* BLOG POST VIEW */
+.blog-post-view { display:none; max-width:760px; margin:0 auto; }
+.blog-post-view.show { display:block; }
+.blog-post-header { margin-bottom:40px; }
+.back-btn { display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:0.78rem; cursor:pointer; margin-bottom:24px; transition:color 0.15s; letter-spacing:0.06em; }
+.back-btn:hover { color:var(--gold); }
+.post-category { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:12px; }
+.post-title { font-family:'Cormorant Garamond',serif; font-size:clamp(1.8rem,3.5vw,2.6rem); font-weight:400; line-height:1.15; margin-bottom:16px; }
+.post-meta { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; color:var(--muted); margin-bottom:32px; }
+.post-body { font-size:0.92rem; line-height:1.85; color:rgba(253,252,248,0.85); }
+.post-body h2 { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:600; color:var(--white); margin:32px 0 14px; }
+.post-body h3 { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:600; color:var(--gold); margin:24px 0 10px; }
+.post-body p { margin-bottom:16px; }
+.post-body ul { padding-left:20px; margin-bottom:16px; }
+.post-body li { margin-bottom:6px; }
+.post-body strong { color:var(--white); }
+.post-cta { background:var(--charcoal); border:1px solid var(--border); padding:28px 32px; margin-top:40px; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+.post-cta h3 { font-family:'Cormorant Garamond',serif; font-size:1.2rem; margin-bottom:4px; }
+.post-cta p { font-size:0.82rem; color:var(--muted); }
+.post-cta a { background:var(--gold); color:var(--black); padding:11px 24px; text-decoration:none; font-size:0.76rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; white-space:nowrap; transition:background 0.15s; }
+.post-cta a:hover { background:var(--gold-light); }
+
+/* ══════════════════════════════
+   NEIGHBORHOOD GUIDES
+══════════════════════════════ */
+.hood-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; max-width:1100px; margin:0 auto; }
+.hood-card { background:var(--charcoal); border:1px solid var(--border2); cursor:pointer; transition:all 0.2s; overflow:hidden; }
+.hood-card:hover { border-color:var(--border); transform:translateY(-2px); }
+.hood-card-banner { height:120px; display:flex; align-items:center; justify-content:center; font-size:3rem; background:var(--surface2); position:relative; overflow:hidden; }
+.hood-card-banner::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom, transparent 40%, rgba(20,20,20,0.8)); }
+.hood-card-body { padding:20px; }
+.hood-name { font-family:'Cormorant Garamond',serif; font-size:1.25rem; font-weight:600; margin-bottom:6px; }
+.hood-tagline { font-size:0.78rem; color:var(--muted); margin-bottom:14px; line-height:1.5; }
+.hood-stats { display:flex; gap:12px; flex-wrap:wrap; }
+.hood-stat { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; color:var(--muted); }
+.hood-stat span { color:var(--gold); font-size:0.78rem; }
+
+/* NEIGHBORHOOD DETAIL */
+.hood-detail { display:none; max-width:900px; margin:0 auto; }
+.hood-detail.show { display:block; }
+.hood-detail-header { display:grid; grid-template-columns:1fr auto; gap:24px; align-items:start; margin-bottom:40px; }
+.hood-detail-emoji { font-size:4rem; }
+.hood-detail-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,4vw,3rem); font-weight:400; line-height:1.1; margin-bottom:8px; }
+.hood-detail-sub { color:var(--muted); font-size:0.9rem; }
+.hood-stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:40px; }
+.hood-stat-card { background:var(--charcoal); border:1px solid var(--border2); padding:18px; text-align:center; }
+.hood-stat-card-val { font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:700; color:var(--gold); line-height:1; margin-bottom:4px; }
+.hood-stat-card-label { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); }
+.hood-sections { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:32px; }
+.hood-section { background:var(--charcoal); border:1px solid var(--border2); padding:22px; }
+.hood-section h3 { font-family:'Cormorant Garamond',serif; font-size:1.05rem; font-weight:600; color:var(--gold); margin-bottom:12px; }
+.hood-section ul { list-style:none; }
+.hood-section li { font-size:0.83rem; color:var(--muted); padding:5px 0; border-bottom:1px solid var(--border2); line-height:1.5; }
+.hood-section li:last-child { border-bottom:none; }
+.hood-section li::before { content:'→ '; color:var(--gold); }
+
+/* ══════════════════════════════
+   CLIENT PORTAL
+══════════════════════════════ */
+.portal-gate { max-width:480px; margin:0 auto; text-align:center; padding:20px; }
+.portal-gate .lock-icon { font-size:3rem; margin-bottom:20px; opacity:0.6; }
+.portal-form { background:var(--charcoal); border:1px solid var(--border); padding:36px; margin-top:28px; text-align:left; }
+.portal-form h3 { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:600; margin-bottom:6px; }
+.portal-form p { font-size:0.82rem; color:var(--muted); margin-bottom:24px; }
+.portal-input { width:100%; background:var(--surface2); border:1px solid var(--border2); color:var(--white); padding:12px 16px; font-family:'Jost',sans-serif; font-size:0.88rem; outline:none; margin-bottom:14px; transition:border-color 0.2s; }
+.portal-input:focus { border-color:var(--gold); }
+.portal-input::placeholder { color:var(--muted); }
+.portal-btn { width:100%; background:var(--gold); border:none; color:var(--black); padding:13px; font-family:'Jost',sans-serif; font-size:0.8rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:background 0.15s; }
+.portal-btn:hover { background:var(--gold-light); }
+.portal-demo-btn { width:100%; background:transparent; border:1px solid var(--border); color:var(--muted); padding:11px; font-family:'Jost',sans-serif; font-size:0.78rem; letter-spacing:0.06em; cursor:pointer; transition:all 0.15s; margin-top:10px; }
+.portal-demo-btn:hover { border-color:var(--border2); color:var(--white); }
+.portal-error { color:var(--red); font-size:0.78rem; margin-top:-8px; margin-bottom:10px; display:none; }
+.portal-error.show { display:block; }
+
+/* PORTAL DASHBOARD */
+.portal-dashboard { display:none; }
+.portal-dashboard.show { display:block; }
+.portal-welcome { display:flex; align-items:center; justify-content:space-between; margin-bottom:32px; flex-wrap:wrap; gap:16px; }
+.portal-welcome h2 { font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:400; }
+.portal-welcome h2 span { color:var(--gold); font-style:italic; }
+.portal-logout { padding:8px 18px; border:1px solid var(--border2); background:transparent; color:var(--muted); font-family:'Jost',sans-serif; font-size:0.74rem; cursor:pointer; transition:all 0.15s; }
+.portal-logout:hover { border-color:var(--border); color:var(--white); }
+
+.portal-tabs { display:flex; gap:0; border-bottom:1px solid var(--border2); margin-bottom:32px; }
+.portal-tab { padding:12px 20px; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; transition:all 0.15s; }
+.portal-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+.portal-tab:hover { color:var(--white); }
+
+.portal-section { display:none; }
+.portal-section.active { display:block; }
+
+/* PORTAL CARDS */
+.portal-stat-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
+.portal-stat-card { background:var(--charcoal); border:1px solid var(--border2); padding:20px; }
+.psc-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.psc-val { font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:700; color:var(--gold); line-height:1; }
+.psc-sub { font-size:0.72rem; color:var(--muted); margin-top:4px; }
+
+.portal-card { background:var(--charcoal); border:1px solid var(--border2); margin-bottom:16px; }
+.portal-card-header { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-bottom:1px solid var(--border2); background:var(--surface2); }
+.portal-card-title { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); }
+.portal-card-body { padding:20px; }
+
+.doc-item { display:flex; align-items:center; gap:14px; padding:12px 0; border-bottom:1px solid var(--border2); }
+.doc-item:last-child { border-bottom:none; }
+.doc-icon { width:38px; height:38px; background:var(--gold-pale); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+.doc-name { font-size:0.86rem; color:var(--white); margin-bottom:2px; }
+.doc-meta { font-size:0.72rem; color:var(--muted); }
+.doc-download { margin-left:auto; padding:6px 14px; border:1px solid var(--border); color:var(--muted); font-size:0.7rem; cursor:pointer; transition:all 0.15s; flex-shrink:0; }
+.doc-download:hover { border-color:var(--gold); color:var(--gold); }
+
+.timeline-item { display:flex; gap:16px; padding:12px 0; border-bottom:1px solid var(--border2); }
+.timeline-item:last-child { border-bottom:none; }
+.timeline-dot { width:10px; height:10px; border-radius:50%; margin-top:5px; flex-shrink:0; }
+.timeline-dot.done { background:var(--green); }
+.timeline-dot.active { background:var(--gold); box-shadow:0 0 8px rgba(184,151,90,0.5); }
+.timeline-dot.pending { background:var(--border); }
+.timeline-title { font-size:0.86rem; color:var(--white); margin-bottom:2px; }
+.timeline-date { font-size:0.72rem; color:var(--muted); }
+
+.message-item { padding:14px 0; border-bottom:1px solid var(--border2); }
+.message-item:last-child { border-bottom:none; }
+.message-from { font-size:0.82rem; font-weight:500; color:var(--white); margin-bottom:4px; }
+.message-text { font-size:0.8rem; color:var(--muted); line-height:1.5; }
+.message-time { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--muted); margin-top:4px; letter-spacing:0.08em; }
+
+.listing-match { display:grid; grid-template-columns:100px 1fr auto; gap:16px; align-items:center; padding:14px 0; border-bottom:1px solid var(--border2); }
+.listing-match:last-child { border-bottom:none; }
+.listing-thumb { width:100px; height:70px; background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:1.8rem; }
+.listing-match-name { font-size:0.88rem; color:var(--white); margin-bottom:4px; }
+.listing-match-meta { font-size:0.76rem; color:var(--muted); }
+.listing-match-price { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:700; color:var(--gold); white-space:nowrap; }
+
+.reply-wrap { display:flex; gap:0; margin-top:16px; border:1px solid var(--border2); overflow:hidden; }
+.reply-wrap input { flex:1; background:var(--surface2); border:none; outline:none; color:var(--white); padding:11px 14px; font-family:'Jost',sans-serif; font-size:0.84rem; }
+.reply-wrap input::placeholder { color:var(--muted); }
+.reply-wrap button { background:var(--gold); border:none; color:var(--black); padding:11px 18px; font-size:0.76rem; font-weight:600; cursor:pointer; transition:background 0.15s; }
+.reply-wrap button:hover { background:var(--gold-light); }
+
+/* RESPONSIVE */
+@media(max-width:900px) {
+  nav { padding:12px 20px; }
+  .nav-tabs { display:none; }
+  .panel { padding:90px 20px 40px; }
+  .blog-layout { grid-template-columns:1fr; }
+  .blog-sidebar { display:none; }
+  .blog-card { grid-template-columns:1fr; }
+  .blog-card-img { min-height:80px; }
+  .hood-grid { grid-template-columns:1fr 1fr; }
+  .hood-sections { grid-template-columns:1fr; }
+  .hood-stats-grid { grid-template-columns:repeat(2,1fr); }
+  .portal-stat-row { grid-template-columns:repeat(2,1fr); }
+}
+@media(max-width:600px) {
+  .hood-grid { grid-template-columns:1fr; }
+  .portal-stat-row { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="phenice-boykins-website.html">Phenice <span>Boykins</span></a>
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="showPanel('blog', this)">📝 Blog</div>
+    <div class="nav-tab" onclick="showPanel('guides', this)">🏘️ Guides</div>
+    <div class="nav-tab" onclick="showPanel('portal', this)">🔐 Client Portal</div>
+    <a class="nav-tab" href="phenice-tools.html" style="text-decoration:none;color:inherit">🏫 Buyer Tools</a>
+    <a class="nav-tab" href="phenice-ai-features.html" style="text-decoration:none;color:inherit">💬 AI Tools</a>
+  </div>
+  <a class="nav-back" href="phenice-boykins-website.html">← Home</a>
+</nav>
+
+<!-- ════════════════ BLOG ════════════════ -->
+<div id="blog-panel" class="panel active">
+  <div class="section-header">
+    <div class="eyebrow">Richmond Real Estate</div>
+    <h1>Insights &amp; <em>Advice</em></h1>
+    <p>Straight talk on buying, selling, and living in Richmond — from someone who actually knows this market.</p>
+  </div>
+
+  <!-- Blog list view -->
+  <div id="blog-list-view">
+    <div class="blog-filters">
+      <div class="blog-filter active" onclick="filterBlog('all', this)">All Posts</div>
+      <div class="blog-filter" onclick="filterBlog('buying', this)">Buying</div>
+      <div class="blog-filter" onclick="filterBlog('selling', this)">Selling</div>
+      <div class="blog-filter" onclick="filterBlog('market', this)">Market Updates</div>
+      <div class="blog-filter" onclick="filterBlog('neighborhoods', this)">Neighborhoods</div>
+      <div class="blog-filter" onclick="filterBlog('lifestyle', this)">Lifestyle</div>
+    </div>
+
+    <div class="blog-layout">
+      <div class="blog-grid" id="blogGrid"></div>
+      <div class="blog-sidebar">
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">Richmond Market Pulse</div>
+          <div class="sidebar-stat"><span class="sidebar-stat-label">Median Price</span><span class="sidebar-stat-value">$390K</span></div>
+          <div class="sidebar-stat"><span class="sidebar-stat-label">Days to Pending</span><span class="sidebar-stat-value">30</span></div>
+          <div class="sidebar-stat"><span class="sidebar-stat-label">YoY Appreciation</span><span class="sidebar-stat-value">+9%</span></div>
+          <div class="sidebar-stat"><span class="sidebar-stat-label">Competition Score</span><span class="sidebar-stat-value">74/100</span></div>
+          <div class="sidebar-stat"><span class="sidebar-stat-label">Active Listings</span><span class="sidebar-stat-value">1,240</span></div>
+        </div>
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">Get Market Updates</div>
+          <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;line-height:1.5">Monthly Richmond market intel, straight to your inbox.</p>
+          <input class="newsletter-input" type="text" placeholder="Your name">
+          <input class="newsletter-input" type="email" placeholder="Your email">
+          <button class="newsletter-btn" onclick="subscribeNewsletter()">Subscribe →</button>
+        </div>
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">Talk to Phenice</div>
+          <p style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;line-height:1.5">Ready to buy or sell? Let's make it happen.</p>
+          <a href="phenice-boykins-website.html#contact" style="display:block;background:var(--gold);color:var(--black);text-align:center;padding:11px;text-decoration:none;font-size:0.76rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;transition:background 0.15s" onmouseover="this.style.background='var(--gold-light)'" onmouseout="this.style.background='var(--gold)'">Book a Consultation →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blog post view -->
+  <div class="blog-post-view" id="blogPostView">
+    <div class="back-btn" onclick="closeBlogPost()">← Back to Blog</div>
+    <div class="post-category" id="postCategory"></div>
+    <h1 class="post-title" id="postTitle"></h1>
+    <div class="post-meta" id="postMeta"></div>
+    <div class="post-body" id="postBody"></div>
+    <div class="post-cta">
+      <div>
+        <h3>Ready to make your move?</h3>
+        <p>Phenice is ready to guide you through every step.</p>
+      </div>
+      <a href="phenice-boykins-website.html#contact">Schedule a Consultation →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ NEIGHBORHOOD GUIDES ════════════════ -->
+<div id="guides-panel" class="panel">
+  <div class="section-header">
+    <div class="eyebrow">Know Before You Buy</div>
+    <h1>Neighborhood <em>Guides</em></h1>
+    <p>Phenice's insider take on every Richmond-area community — real data, real perspective.</p>
+  </div>
+
+  <div class="hood-grid" id="hoodGrid"></div>
+
+  <div class="hood-detail" id="hoodDetail">
+    <div class="back-btn" onclick="closeHoodDetail()">← Back to Neighborhoods</div>
+    <div class="hood-detail-header">
+      <div>
+        <div class="post-category" id="hoodCategory">NEIGHBORHOOD GUIDE</div>
+        <h1 class="hood-detail-title" id="hoodTitle"></h1>
+        <p class="hood-detail-sub" id="hoodSub"></p>
+      </div>
+      <div class="hood-detail-emoji" id="hoodEmoji"></div>
+    </div>
+    <div class="hood-stats-grid" id="hoodStatsGrid"></div>
+    <div class="hood-sections" id="hoodSections"></div>
+    <div class="post-cta">
+      <div>
+        <h3>Want to live here?</h3>
+        <p>Phenice knows every street in this neighborhood.</p>
+      </div>
+      <a href="phenice-boykins-website.html#contact">Find Homes Here →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ CLIENT PORTAL ════════════════ -->
+<div id="portal-panel" class="panel">
+
+  <!-- LOGIN GATE -->
+  <div id="portalGate" class="portal-gate">
+    <div class="section-header" style="margin-bottom:0">
+      <div class="eyebrow">Secure Access</div>
+      <h1>Client <em>Portal</em></h1>
+      <p>Your private dashboard — transaction updates, documents, saved homes, and messages with Phenice.</p>
+    </div>
+    <div class="portal-form">
+      <h3>Sign In</h3>
+      <p>Enter your email and the access code Phenice sent you.</p>
+      <input class="portal-input" type="email" id="portalEmail" placeholder="your@email.com">
+      <input class="portal-input" type="password" id="portalCode" placeholder="Access code">
+      <div class="portal-error" id="portalError">Invalid email or access code. Try: demo@phenice.com / PHENICE2025</div>
+      <button class="portal-btn" onclick="portalLogin()">Access My Portal →</button>
+      <button class="portal-demo-btn" onclick="portalDemoLogin()">👁 View Demo Portal</button>
+    </div>
+  </div>
+
+  <!-- PORTAL DASHBOARD -->
+  <div id="portalDashboard" class="portal-dashboard">
+    <div class="portal-welcome">
+      <div>
+        <h2>Welcome back, <span id="portalClientName">Sarah</span></h2>
+        <p style="font-size:0.82rem;color:var(--muted)">Your transaction is moving forward. Here's everything you need.</p>
+      </div>
+      <button class="portal-logout" onclick="portalLogout()">Sign Out</button>
+    </div>
+
+    <div class="portal-tabs">
+      <div class="portal-tab active" onclick="switchPortalTab('overview', this)">Overview</div>
+      <div class="portal-tab" onclick="switchPortalTab('documents', this)">Documents</div>
+      <div class="portal-tab" onclick="switchPortalTab('timeline', this)">Timeline</div>
+      <div class="portal-tab" onclick="switchPortalTab('matches', this)">Home Matches</div>
+      <div class="portal-tab" onclick="switchPortalTab('messages', this)">Messages</div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="portal-section active" id="ptab-overview">
+      <div class="portal-stat-row">
+        <div class="portal-stat-card">
+          <div class="psc-label">Transaction Status</div>
+          <div class="psc-val" style="font-size:1.1rem;margin-top:4px">Under Contract</div>
+          <div class="psc-sub" style="color:var(--green)">● Active</div>
+        </div>
+        <div class="portal-stat-card">
+          <div class="psc-label">Closing Date</div>
+          <div class="psc-val">Apr 14</div>
+          <div class="psc-sub">36 days away</div>
+        </div>
+        <div class="portal-stat-card">
+          <div class="psc-label">Purchase Price</div>
+          <div class="psc-val">$418K</div>
+          <div class="psc-sub">Accepted offer</div>
+        </div>
+        <div class="portal-stat-card">
+          <div class="psc-label">Documents</div>
+          <div class="psc-val">7</div>
+          <div class="psc-sub">2 need signature</div>
+        </div>
+      </div>
+      <div class="portal-card">
+        <div class="portal-card-header"><span class="portal-card-title">📍 Your Property</span></div>
+        <div class="portal-card-body">
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center">
+            <div style="width:100px;height:70px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:2rem">🏡</div>
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;margin-bottom:4px">4209 Brook Road, Richmond, VA 23227</div>
+              <div style="font-size:0.8rem;color:var(--muted)">4 bed · 2.5 bath · 2,450 sq ft · Built 2004</div>
+              <div style="font-size:0.78rem;color:var(--gold);margin-top:6px">Single Family · Henrico County</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="portal-card">
+        <div class="portal-card-header"><span class="portal-card-title">🔔 Recent Activity</span></div>
+        <div class="portal-card-body">
+          <div class="message-item"><div class="message-from">Phenice sent you a message</div><div class="message-text">Home inspection is scheduled for Thursday at 10am. I'll be there with you. Let me know if you have any questions beforehand!</div><div class="message-time">Today, 9:14 AM</div></div>
+          <div class="message-item"><div class="message-from">Document ready for signature</div><div class="message-text">Your Buyer's Representation Agreement has been uploaded and is ready for your signature.</div><div class="message-time">Yesterday, 3:42 PM</div></div>
+          <div class="message-item"><div class="message-from">Offer accepted 🎉</div><div class="message-text">Congratulations! Your offer of $418,000 was accepted. We're officially under contract.</div><div class="message-time">Mar 7, 11:22 AM</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DOCUMENTS -->
+    <div class="portal-section" id="ptab-documents">
+      <div class="portal-card">
+        <div class="portal-card-header"><span class="portal-card-title">📁 Your Documents</span><span style="font-size:0.72rem;color:var(--muted)">7 files · 2 need action</span></div>
+        <div class="portal-card-body">
+          <div class="doc-item"><div class="doc-icon">📄</div><div><div class="doc-name">Purchase Agreement</div><div class="doc-meta">Signed · Mar 7, 2025 · 2.1 MB</div></div><button class="doc-download">Download</button></div>
+          <div class="doc-item"><div class="doc-icon" style="border-color:var(--gold);color:var(--gold)">✍️</div><div><div class="doc-name">Buyer's Representation Agreement</div><div class="doc-meta" style="color:var(--gold)">Needs Signature · Uploaded Mar 8</div></div><button class="doc-download" style="border-color:var(--gold);color:var(--gold)">Sign Now</button></div>
+          <div class="doc-item"><div class="doc-icon">🏦</div><div><div class="doc-name">Mortgage Pre-Approval Letter</div><div class="doc-meta">Uploaded · Feb 28, 2025 · 0.8 MB</div></div><button class="doc-download">Download</button></div>
+          <div class="doc-item"><div class="doc-icon" style="border-color:var(--gold);color:var(--gold)">✍️</div><div><div class="doc-name">Home Inspection Authorization</div><div class="doc-meta" style="color:var(--gold)">Needs Signature · Uploaded Mar 9</div></div><button class="doc-download" style="border-color:var(--gold);color:var(--gold)">Sign Now</button></div>
+          <div class="doc-item"><div class="doc-icon">🔍</div><div><div class="doc-name">Seller Disclosure Form</div><div class="doc-meta">Received · Mar 5, 2025 · 1.4 MB</div></div><button class="doc-download">Download</button></div>
+          <div class="doc-item"><div class="doc-icon">🏘️</div><div><div class="doc-name">HOA Documents</div><div class="doc-meta">Received · Mar 6, 2025 · 3.2 MB</div></div><button class="doc-download">Download</button></div>
+          <div class="doc-item"><div class="doc-icon">💰</div><div><div class="doc-name">Closing Cost Estimate</div><div class="doc-meta">Uploaded · Mar 8, 2025 · 0.5 MB</div></div><button class="doc-download">Download</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="portal-section" id="ptab-timeline">
+      <div class="portal-card">
+        <div class="portal-card-header"><span class="portal-card-title">📅 Transaction Timeline</span></div>
+        <div class="portal-card-body">
+          <div class="timeline-item"><div class="timeline-dot done"></div><div><div class="timeline-title">Pre-Approval Secured</div><div class="timeline-date">✅ Completed · Feb 28, 2025</div></div></div>
+          <div class="timeline-item"><div class="timeline-dot done"></div><div><div class="timeline-title">Home Search &amp; Showings</div><div class="timeline-date">✅ Completed · Feb 28 – Mar 6, 2025</div></div></div>
+          <div class="timeline-item"><div class="timeline-dot done"></div><div><div class="timeline-title">Offer Submitted &amp; Accepted</div><div class="timeline-date">✅ Completed · Mar 7, 2025 — $418,000</div></div></div>
+          <div class="timeline-item"><div class="timeline-dot active"></div><div><div class="timeline-title">Home Inspection</div><div class="timeline-date">🔄 In Progress · Scheduled Mar 13, 2025</div></div></div>
+          <div class="timeline-item"><div class="timeline-dot pending"></div><div><div class="timeline-title">Appraisal</div><div class="timeline-date">⏳ Pending · Est. Mar 18–20, 2025</div></div></div>
+          <div class="timeline-item"><div class="timeline-dot pending"></div><div><div class="timeline-title">Final Loan Approval</div><div class="timeline-date">⏳ Pending · Est. Apr 1, 2025</div></div></div>
+          <div class="timeline-item"><div class="timeline-dot pending"></div><div><div class="timeline-title">Final Walkthrough</div><div class="timeline-date">⏳ Pending · Est. Apr 12, 2025</div></div></div>
+          <div class="timeline-item"><div class="timeline-dot pending"></div><div><div class="timeline-title">🎉 Closing Day</div><div class="timeline-date">⏳ Target · April 14, 2025</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOME MATCHES -->
+    <div class="portal-section" id="ptab-matches">
+      <div class="portal-card">
+        <div class="portal-card-header"><span class="portal-card-title">🏠 Saved &amp; Matched Homes</span><span style="font-size:0.72rem;color:var(--muted)">Based on your preferences</span></div>
+        <div class="portal-card-body">
+          <div class="listing-match"><div class="listing-thumb">🏡</div><div><div class="listing-match-name">4209 Brook Road — <span style="color:var(--green)">Under Contract ✓</span></div><div class="listing-match-meta">4 bed · 2.5 bath · 2,450 sq ft · Henrico</div></div><div class="listing-match-price">$418,000</div></div>
+          <div class="listing-match"><div class="listing-thumb">🏠</div><div><div class="listing-match-name">9121 Gayton Road</div><div class="listing-match-meta">4 bed · 3 bath · 2,680 sq ft · Glen Allen</div></div><div class="listing-match-price">$439,000</div></div>
+          <div class="listing-match"><div class="listing-thumb">🏘️</div><div><div class="listing-match-name">3814 Skipwith Road</div><div class="listing-match-meta">3 bed · 2 bath · 1,980 sq ft · Henrico</div></div><div class="listing-match-price">$385,000</div></div>
+          <div class="listing-match"><div class="listing-thumb">🏡</div><div><div class="listing-match-name">12402 Ridgemoor Drive</div><div class="listing-match-meta">5 bed · 3 bath · 3,100 sq ft · Midlothian</div></div><div class="listing-match-price">$512,000</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div class="portal-section" id="ptab-messages">
+      <div class="portal-card">
+        <div class="portal-card-header"><span class="portal-card-title">💬 Messages with Phenice</span></div>
+        <div class="portal-card-body" id="portalMessages">
+          <div class="message-item"><div class="message-from">Phenice Boykins</div><div class="message-text">Home inspection is scheduled for Thursday at 10am. I'll be there with you — no need to worry, I'll walk you through everything they find. Let me know if you have any questions!</div><div class="message-time">Today, 9:14 AM</div></div>
+          <div class="message-item"><div class="message-from">You</div><div class="message-text">Thank you Phenice! Should I bring anything or just show up?</div><div class="message-time">Today, 9:31 AM</div></div>
+          <div class="message-item"><div class="message-from">Phenice Boykins</div><div class="message-text">Just you and your questions! I'll have coffee ☕ The inspector will go room by room and I'll translate everything into plain English for you.</div><div class="message-time">Today, 9:45 AM</div></div>
+        </div>
+        <div class="portal-card-body" style="padding-top:0">
+          <div class="reply-wrap">
+            <input type="text" id="portalMsgInput" placeholder="Type a message to Phenice..." onkeypress="if(event.key==='Enter')sendPortalMessage()">
+            <button onclick="sendPortalMessage()">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /portal-dashboard -->
+</div><!-- /portal-panel -->
+
+<script>
+// ══ NAVIGATION ══
+function showPanel(id, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id + '-panel').classList.add('active');
+  if (el) el.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ══════════════════════════
+// BLOG DATA
+// ══════════════════════════
+const blogPosts = [
+  {
+    id: 1, category: 'market', emoji: '📊',
+    title: "Richmond's Housing Market in 2025: What Buyers Need to Know Right Now",
+    excerpt: "The Richmond market is still competitive — but not impossible. Here's the honest breakdown of what's happening, what it means for you, and how to win without overpaying.",
+    date: 'March 5, 2025', readTime: '6 min read',
+    body: `<h2>The Numbers First</h2>
+<p>Richmond's median home price sits at <strong>$390,000</strong> — up 9% from last year. Homes are going to pending in about 30 days on average, and the competition score is 74 out of 100. That means it's competitive, but not the frenzy we saw in 2021–2022.</p>
+<h2>What That Means for Buyers</h2>
+<p>The good news: you actually have time to think. You're not writing blind offers the same day you see a house anymore. The not-so-good news: well-priced homes in great school districts still move fast — often within two weeks.</p>
+<h3>The Neighborhoods Moving Fastest</h3>
+<ul>
+<li><strong>Midlothian</strong> — Families are fighting over homes here. School ratings are high and inventory is low.</li>
+<li><strong>Glen Allen</strong> — Relocating professionals love it. New construction plus established neighborhoods.</li>
+<li><strong>Short Pump</strong> — Still a premium market but slightly more inventory than a year ago.</li>
+</ul>
+<h2>What Smart Buyers Are Doing</h2>
+<p>The buyers winning right now are pre-approved (not just pre-qualified — there's a real difference), know their must-haves vs. nice-to-haves, and have an agent who knows how to write a clean offer. That last part matters more than people think.</p>
+<p>If you're serious about buying in Richmond this year, the best time to start was yesterday. The second best time is today.</p>`
+  },
+  {
+    id: 2, category: 'buying', emoji: '🏡',
+    title: "First-Time Buyer in Virginia? Here's What No One Tells You",
+    excerpt: "The mortgage, the inspection, the closing costs — they explain all that. What they don't tell you is the emotional and logistical stuff that actually trips people up.",
+    date: 'February 20, 2025', readTime: '8 min read',
+    body: `<h2>The Part They Skip in the Brochures</h2>
+<p>Every first-time buyer guide covers the basics: get pre-approved, find a house, make an offer. What they don't tell you is that the process feels deeply personal in a way that can catch you off guard.</p>
+<h3>You Will Fall in Love With a House You Don't Get</h3>
+<p>It happens to almost everyone. You walk into a home, you can picture your life there, and then someone outbids you. It stings. The key is knowing that the house that was meant for you hasn't shown up yet — and it will.</p>
+<h2>Virginia-Specific Things to Know</h2>
+<p>Virginia is an attorney state, which means a real estate attorney handles your closing — not a title company employee. This is actually a good thing. It means you have licensed legal representation reviewing every document.</p>
+<h3>Closing Costs Are Real</h3>
+<p>Budget 2–3% of the purchase price for closing costs on top of your down payment. On a $390,000 home, that's roughly $8,000–$12,000. Virginia also has a grantor's tax paid by the seller, but you'll still have your own set of fees.</p>
+<h2>The One Thing That Changes Everything</h2>
+<p>Having an agent who communicates like a human being. Not just someone who sends you listings. Someone who answers texts, explains the confusing parts, and advocates for you when it counts. That's what I do — and that's what every buyer deserves.</p>`
+  },
+  {
+    id: 3, category: 'selling', emoji: '🏷️',
+    title: "How to Price Your Richmond Home to Sell — Without Leaving Money on the Table",
+    excerpt: "Overpricing is the #1 mistake sellers make. But underpricing isn't the answer either. Here's how to find the number that gets you top dollar fast.",
+    date: 'February 10, 2025', readTime: '5 min read',
+    body: `<h2>The Price Is the Strategy</h2>
+<p>Most sellers think pricing is about what they need from the sale. It's not. It's about what the market will bear — and understanding the psychology of buyers in your price range.</p>
+<h2>Why Overpricing Backfires</h2>
+<p>When a home sits on the market for 60+ days, buyers assume something is wrong with it. Even if you eventually drop the price, the stigma sticks. You end up selling for less than if you'd priced it right the first time.</p>
+<h3>The Richmond Sweet Spot</h3>
+<p>Homes priced within 2% of their true market value in Richmond sell three times faster and for 98–102% of asking price. Homes priced 5%+ over market sit an average of 74 days and sell for 91% of original ask.</p>
+<h2>What Goes Into Accurate Pricing</h2>
+<ul>
+<li><strong>Comparable sales (comps)</strong> — What similar homes nearby sold for in the last 90 days</li>
+<li><strong>Active competition</strong> — What buyers are looking at right now in your price range</li>
+<li><strong>Your home's condition</strong> — Updated kitchen and baths can justify 8–12% premium</li>
+<li><strong>Seasonal timing</strong> — Spring listings in Richmond consistently command 4–6% more</li>
+</ul>
+<h2>My Approach</h2>
+<p>I run a full comparative market analysis for every listing before we ever talk numbers. Then I give you my honest recommendation — not the number I think you want to hear.</p>`
+  },
+  {
+    id: 4, category: 'neighborhoods', emoji: '🌳',
+    title: "Midlothian vs. Glen Allen: Which One Is Actually Right for Your Family?",
+    excerpt: "Both are top choices for Richmond families. But they feel completely different to live in. Here's the honest comparison from someone who knows both.",
+    date: 'January 28, 2025', readTime: '7 min read',
+    body: `<h2>The Short Answer</h2>
+<p>Midlothian if you want that suburban-with-soul feel — tight-knit, wooded, strong schools, and a sense of community that's hard to manufacture. Glen Allen if you want newer construction, easy interstate access, and a more transient but polished vibe.</p>
+<h2>Schools</h2>
+<p>Both are in excellent school districts. <strong>Chesterfield County</strong> (Midlothian's district) and <strong>Henrico County</strong> (Glen Allen's district) both consistently rank in Virginia's top 10. The difference is in the specific schools — check the ratings for your exact address before deciding.</p>
+<h2>Price Points</h2>
+<p>Midlothian tends to run $20–40K less than Glen Allen for comparable homes. You get more house for the money, but you'll likely drive more. Glen Allen's proximity to West Broad and I-64 makes it premium.</p>
+<h3>Who Loves Midlothian</h3>
+<ul>
+<li>Families who want acreage and outdoor space</li>
+<li>People who value community events and neighborhood identity</li>
+<li>Buyers who don't mind a 25–35 minute commute to downtown Richmond</li>
+</ul>
+<h3>Who Loves Glen Allen</h3>
+<ul>
+<li>Relocating professionals who want turnkey new construction</li>
+<li>Families who prioritize access to Short Pump Town Center and West Broad</li>
+<li>Buyers who want minimal maintenance and HOA amenities</li>
+</ul>
+<h2>My Honest Take</h2>
+<p>If you're raising kids and plan to stay 10+ years, Midlothian has a depth of community that Glen Allen is still building. If you're here for 5–7 years and want to maximize resale, Glen Allen holds value exceptionally well.</p>`
+  },
+  {
+    id: 5, category: 'lifestyle', emoji: '☕',
+    title: "Where to Live in Richmond If You Actually Want to Walk Somewhere",
+    excerpt: "Most of Richmond is car-dependent — but not all of it. Here are the neighborhoods where walkability is real, not just a listing description lie.",
+    date: 'January 15, 2025', readTime: '5 min read',
+    body: `<h2>Let's Be Honest About Richmond's Walkability</h2>
+<p>Richmond is not New York. Most of the city requires a car. But there are pockets of genuine walkability — places where you can actually leave the house on foot and come back with coffee, groceries, and a dog that's been properly walked.</p>
+<h2>The Real Walkable Neighborhoods</h2>
+<h3>The Fan District</h3>
+<p>The gold standard. Walk Score in the high 80s. Carytown is steps away. You'll find independent restaurants, bars, boutiques, and Monument Avenue right outside your door. Housing is older (1900s–1940s), but the character is unmatched.</p>
+<h3>Scott's Addition</h3>
+<p>Richmond's trendiest neighborhood. Breweries, restaurants, coffee shops, and a farmers market. Walkable within the neighborhood, though you still need a car for groceries. Condo and loft heavy — great for young professionals.</p>
+<h3>Church Hill</h3>
+<p>One of Richmond's oldest neighborhoods with genuine walkability on the north side. Historic homes, views of the city, and a growing restaurant scene on 25th Street.</p>
+<h2>Worth Mentioning</h2>
+<p>Downtown Richmond itself has strong walkability if you work downtown. But most buyers moving to Richmond aren't choosing downtown for family life — they're choosing the suburbs for schools and space.</p>
+<p>If walkability matters to you, tell me upfront and I'll filter your search accordingly. It changes everything about which neighborhoods we look at.</p>`
+  },
+  {
+    id: 6, category: 'buying', emoji: '🔑',
+    title: "The Home Inspection: What to Expect, What to Worry About, and What to Ignore",
+    excerpt: "Inspectors find things in every house. Knowing which findings are deal-breakers and which are noise is the difference between a confident buyer and a panicked one.",
+    date: 'January 5, 2025', readTime: '6 min read',
+    body: `<h2>Every House Has Something</h2>
+<p>I say this to every buyer before the inspection: the inspector will find things. Always. That is their job. A 40-page inspection report doesn't mean you're buying a money pit — it means you have a thorough inspector doing their job.</p>
+<h2>What to Actually Worry About</h2>
+<h3>Structural Issues</h3>
+<p>Foundation cracks, roof structural damage, load-bearing wall problems. These are expensive and non-negotiable. If an inspector flags these, get a structural engineer out before you move forward.</p>
+<h3>Roof Condition</h3>
+<p>A roof replacement in Richmond runs $8,000–$18,000 depending on size and material. If the roof has 3–5 years of life left, negotiate a credit. If it's already failing, it's a deal-breaker or a major negotiation point.</p>
+<h3>HVAC Age and Condition</h3>
+<p>A 20-year-old HVAC that's been maintained is less of a concern than a 12-year-old system that hasn't been serviced. Ask the inspector for their honest read on remaining life.</p>
+<h2>What to Ignore (Mostly)</h2>
+<ul>
+<li>Minor electrical outlets that need updating</li>
+<li>Cosmetic issues (paint, old fixtures, dated finishes)</li>
+<li>Small plumbing drips under sinks</li>
+<li>Windows that need recaulking</li>
+</ul>
+<h2>My Role at the Inspection</h2>
+<p>I attend every inspection with my clients. I speak fluent inspector — and I translate it into plain English so you know exactly what matters and what doesn't. You should never leave an inspection feeling confused about what you just bought.</p>`
+  }
+];
+
+let activeBlogFilter = 'all';
+
+function renderBlog() {
+  const grid = document.getElementById('blogGrid');
+  const filtered = activeBlogFilter === 'all' ? blogPosts : blogPosts.filter(p => p.category === activeBlogFilter);
+  grid.innerHTML = filtered.map(p => `
+    <div class="blog-card" onclick="openBlogPost(${p.id})">
+      <div class="blog-card-img">${p.emoji}</div>
+      <div class="blog-card-body">
+        <div class="blog-category">${p.category.toUpperCase()}</div>
+        <div class="blog-title">${p.title}</div>
+        <div class="blog-excerpt">${p.excerpt}</div>
+        <div class="blog-meta"><span>${p.date}</span><span>${p.readTime}</span></div>
+        <div class="blog-read-btn">Read Article →</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterBlog(cat, el) {
+  activeBlogFilter = cat;
+  document.querySelectorAll('.blog-filter').forEach(f => f.classList.remove('active'));
+  el.classList.add('active');
+  renderBlog();
+}
+
+function openBlogPost(id) {
+  const post = blogPosts.find(p => p.id === id);
+  if (!post) return;
+  document.getElementById('blog-list-view').style.display = 'none';
+  document.getElementById('postCategory').textContent = post.category.toUpperCase();
+  document.getElementById('postTitle').textContent = post.title;
+  document.getElementById('postMeta').textContent = `${post.date} · ${post.readTime} · By Phenice Boykins`;
+  document.getElementById('postBody').innerHTML = post.body;
+  document.getElementById('blogPostView').classList.add('show');
+  window.scrollTo(0, 0);
+}
+
+function closeBlogPost() {
+  document.getElementById('blog-list-view').style.display = 'block';
+  document.getElementById('blogPostView').classList.remove('show');
+}
+
+function subscribeNewsletter() {
+  alert('Thanks for subscribing! You\'ll receive your first Richmond market update within the week.');
+}
+
+// ══════════════════════════
+// NEIGHBORHOOD GUIDES DATA
+// ══════════════════════════
+const neighborhoods = [
+  {
+    id: 'midlothian', emoji: '🌳', name: 'Midlothian',
+    tagline: 'Wooded, family-first, and fiercely loyal to its community feel.',
+    county: 'Chesterfield County',
+    stats: [
+      { label: 'Median Price', val: '$385K' },
+      { label: 'School Rating', val: '8.4/10' },
+      { label: 'Avg Commute', val: '32 min' },
+      { label: 'Walk Score', val: '28/100' }
+    ],
+    pros: ['Top-rated Chesterfield County schools', 'More sq footage for the dollar', 'Wooded lots and natural beauty', 'Strong neighborhood identity', 'Low crime rate'],
+    cons: ['Car-dependent lifestyle', 'Longer commute to downtown', 'Limited walkable dining'],
+    restaurants: ['Bonefish Grill', 'Midlothian Brew House', 'Bad Habits Grill', 'Osaka Japanese', 'The Mill'],
+    schools: ['Midlothian HS (8/10)', 'Midlothian MS (8/10)', 'Watkins ES (9/10)'],
+    vibe: 'Established families, outdoor lovers, and long-term residents who chose roots over convenience.'
+  },
+  {
+    id: 'glenallen', emoji: '🏘️', name: 'Glen Allen',
+    tagline: 'Polished, accessible, and built for the modern professional family.',
+    county: 'Henrico County',
+    stats: [
+      { label: 'Median Price', val: '$420K' },
+      { label: 'School Rating', val: '8.1/10' },
+      { label: 'Avg Commute', val: '24 min' },
+      { label: 'Walk Score', val: '42/100' }
+    ],
+    pros: ['Easy I-64 and I-295 access', 'New construction options', 'Short Pump proximity', 'Good Henrico schools', 'Strong resale value'],
+    cons: ['Premium pricing', 'HOA-heavy developments', 'Less neighborhood character'],
+    restaurants: ['Carena\'s Jamaican Grille', 'Kabuto Japanese House', 'Texas de Brazil', 'Firebirds', 'Mekong'],
+    schools: ['Deep Run HS (8/10)', 'Hungary Creek MS (8/10)', 'Springfield Park ES (8/10)'],
+    vibe: 'Relocating professionals, corporate transfers, and growing families who want turnkey and connected.'
+  },
+  {
+    id: 'fan', emoji: '🏛️', name: 'The Fan District',
+    tagline: 'Historic. Walkable. The soul of Richmond.',
+    county: 'City of Richmond',
+    stats: [
+      { label: 'Median Price', val: '$510K' },
+      { label: 'Walk Score', val: '88/100' },
+      { label: 'Avg Commute', val: '12 min' },
+      { label: 'Home Style', val: 'Historic' }
+    ],
+    pros: ['Best walkability in Richmond', 'Steps from Carytown', 'Iconic architecture', 'Vibrant social scene', 'Investment potential'],
+    cons: ['Older homes (maintenance costs)', 'Limited parking', 'City schools vary widely', 'Higher price per sq ft'],
+    restaurants: ['Edo\'s Squid', 'Caffe Rustica', 'Benny Nix Smokehouse', 'Coppola\'s Deli', 'Can Can Brasserie'],
+    schools: ['Thomas Jefferson HS (varies)', 'Fox ES', 'Several private options nearby'],
+    vibe: 'Young professionals, empty nesters, artists, and anyone who values urban character over suburban comfort.'
+  },
+  {
+    id: 'chesterfield', emoji: '🏡', name: 'Chesterfield County',
+    tagline: 'Space, value, and the best public schools in the metro.',
+    county: 'Chesterfield County',
+    stats: [
+      { label: 'Median Price', val: '$360K' },
+      { label: 'School Rating', val: '8.6/10' },
+      { label: 'Avg Commute', val: '28 min' },
+      { label: 'Lot Sizes', val: 'Larger avg' }
+    ],
+    pros: ['Top-ranked school district in VA', 'Best price-to-size ratio', 'Safe, low-crime areas', 'Growing amenities', 'Strong community programs'],
+    cons: ['Sprawling geography — location matters', 'Car required for everything', 'Some older infrastructure'],
+    restaurants: ['Bonefish Grill', 'Sapporo Japanese', 'Midlothian Brew House', 'Cracker Barrel', 'The Courthouse'],
+    schools: ['Cosby HS (9/10)', 'Manchester HS (8/10)', 'Clover Hill HS (8/10)'],
+    vibe: 'Families prioritizing education and value. The #1 destination for buyers relocating with school-age kids.'
+  },
+  {
+    id: 'henrico', emoji: '🌆', name: 'Henrico County',
+    tagline: 'Versatile, accessible, and right between everything.',
+    county: 'Henrico County',
+    stats: [
+      { label: 'Median Price', val: '$370K' },
+      { label: 'School Rating', val: '7.8/10' },
+      { label: 'Avg Commute', val: '20 min' },
+      { label: 'Diversity', val: 'High' }
+    ],
+    pros: ['Central location — access to all of Richmond', 'Diverse communities and cultures', 'Good school options (varies by area)', 'Established neighborhoods', 'Lots of dining and retail'],
+    cons: ['Quality varies significantly by specific location', 'Some areas have older housing stock', 'Traffic on West Broad'],
+    restaurants: ['Mekong', 'L\'Opossum', 'Peter Chang\'s', 'Pho So 1', 'Kabuto'],
+    schools: ['Deep Run HS (8/10)', 'Tucker HS (7/10)', 'Godwin HS (8/10)'],
+    vibe: 'Diverse buyers at all life stages who want central access and established community feel.'
+  },
+  {
+    id: 'scottsaddition', emoji: '🍺', name: "Scott's Addition",
+    tagline: "Richmond's brewery district — reinvented, energetic, and growing fast.",
+    county: 'City of Richmond',
+    stats: [
+      { label: 'Median Price', val: '$340K' },
+      { label: 'Walk Score', val: '76/100' },
+      { label: 'Property Type', val: 'Condos/Lofts' },
+      { label: 'Vibe', val: 'Urban/Hip' }
+    ],
+    pros: ['Best breweries in Richmond', 'Strong walkability', 'Appreciating rapidly', 'Great for young professionals', 'Farmers market and food scene'],
+    cons: ['Mostly condos (no yards)', 'Still developing — construction noise', 'City school district', 'Parking can be challenging'],
+    restaurants: ['The Veil Brewing', 'Ardent Craft Ales', 'Väsen Brewing', 'Bingo Beer Co.', 'Early Bird Biscuit Co.'],
+    schools: ['Mostly private or magnet school options for families'],
+    vibe: "Young professionals, first-time condo buyers, and investors who want to be in Richmond's fastest-appreciating zip code."
+  }
+];
+
+function renderNeighborhoods() {
+  const grid = document.getElementById('hoodGrid');
+  grid.innerHTML = neighborhoods.map(n => `
+    <div class="hood-card" onclick="openHoodDetail('${n.id}')">
+      <div class="hood-card-banner">${n.emoji}</div>
+      <div class="hood-card-body">
+        <div class="hood-name">${n.name}</div>
+        <div class="hood-tagline">${n.tagline}</div>
+        <div class="hood-stats">
+          ${n.stats.slice(0,2).map(s => `<div class="hood-stat">${s.label}: <span>${s.val}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openHoodDetail(id) {
+  const n = neighborhoods.find(h => h.id === id);
+  if (!n) return;
+  document.getElementById('hoodGrid').style.display = 'none';
+  document.getElementById('hoodTitle').textContent = n.name;
+  document.getElementById('hoodSub').textContent = n.county + ' · ' + n.vibe;
+  document.getElementById('hoodEmoji').textContent = n.emoji;
+  document.getElementById('hoodStatsGrid').innerHTML = n.stats.map(s => `
+    <div class="hood-stat-card">
+      <div class="hood-stat-card-val">${s.val}</div>
+      <div class="hood-stat-card-label">${s.label}</div>
+    </div>
+  `).join('');
+  document.getElementById('hoodSections').innerHTML = `
+    <div class="hood-section">
+      <h3>✅ Why Buyers Love It</h3>
+      <ul>${n.pros.map(p => `<li>${p}</li>`).join('')}</ul>
+    </div>
+    <div class="hood-section">
+      <h3>⚠️ Things to Know</h3>
+      <ul>${n.cons.map(c => `<li>${c}</li>`).join('')}</ul>
+    </div>
+    <div class="hood-section">
+      <h3>🍽️ Local Favorites</h3>
+      <ul>${n.restaurants.map(r => `<li>${r}</li>`).join('')}</ul>
+    </div>
+    <div class="hood-section">
+      <h3>🏫 Schools</h3>
+      <ul>${n.schools.map(s => `<li>${s}</li>`).join('')}</ul>
+    </div>
+  `;
+  document.getElementById('hoodDetail').classList.add('show');
+  window.scrollTo(0, 0);
+}
+
+function closeHoodDetail() {
+  document.getElementById('hoodGrid').style.display = 'grid';
+  document.getElementById('hoodDetail').classList.remove('show');
+}
+
+// ══════════════════════════
+// CLIENT PORTAL
+// ══════════════════════════
+const demoCredentials = { email: 'demo@phenice.com', code: 'PHENICE2025' };
+
+function portalLogin() {
+  const email = document.getElementById('portalEmail').value.trim();
+  const code = document.getElementById('portalCode').value.trim().toUpperCase();
+  if (email === demoCredentials.email && code === demoCredentials.code) {
+    launchPortal('Sarah Johnson');
+  } else {
+    document.getElementById('portalError').classList.add('show');
+  }
+}
+
+function portalDemoLogin() {
+  launchPortal('Sarah Johnson');
+}
+
+function launchPortal(name) {
+  document.getElementById('portalGate').style.display = 'none';
+  document.getElementById('portalClientName').textContent = name;
+  document.getElementById('portalDashboard').classList.add('show');
+  document.getElementById('portalError').classList.remove('show');
+}
+
+function portalLogout() {
+  document.getElementById('portalGate').style.display = 'block';
+  document.getElementById('portalDashboard').classList.remove('show');
+  document.getElementById('portalEmail').value = '';
+  document.getElementById('portalCode').value = '';
+}
+
+function switchPortalTab(id, el) {
+  document.querySelectorAll('.portal-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.portal-section').forEach(s => s.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.getElementById('ptab-' + id).classList.add('active');
+}
+
+function sendPortalMessage() {
+  const input = document.getElementById('portalMsgInput');
+  const text = input.value.trim();
+  if (!text) return;
+  const container = document.getElementById('portalMessages');
+  const div = document.createElement('div');
+  div.className = 'message-item';
+  div.innerHTML = `<div class="message-from">You</div><div class="message-text">${text}</div><div class="message-time">Just now</div>`;
+  container.appendChild(div);
+  input.value = '';
+  container.scrollTop = container.scrollHeight;
+  setTimeout(() => {
+    const reply = document.createElement('div');
+    reply.className = 'message-item';
+    reply.innerHTML = `<div class="message-from">Phenice Boykins</div><div class="message-text">Got your message! I'll get back to you shortly. You can also reach me directly at (804) 482-0402.</div><div class="message-time">Just now</div>`;
+    container.appendChild(reply);
+    container.scrollTop = container.scrollHeight;
+  }, 1800);
+}
+
+// ══ INIT ══
+renderBlog();
+renderNeighborhoods();
+</script>
+
+<!-- FOOTER -->
+<footer style="background:#080808;border-top:1px solid rgba(184,151,90,0.18);padding:32px 40px;text-align:center;margin-top:60px">
+  <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#fdfcf8;margin-bottom:16px">Phenice <span style='color:#b8975a'>Boykins</span></div>
+  <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin:12px 0;font-size:0.74rem;letter-spacing:0.1em;text-transform:uppercase">
+    <a href="phenice-boykins-website.html" style="color:rgba(253,252,248,0.5);text-decoration:none">Home</a>
+    <a href="phenice-tools.html" style="color:rgba(253,252,248,0.5);text-decoration:none">Buyer Tools</a>
+    <a href="phenice-ai-features.html" style="color:rgba(253,252,248,0.5);text-decoration:none">AI Tools</a>
+    <a href="phenice-resources.html" style="color:rgba(253,252,248,0.5);text-decoration:none">Blog</a>
+    <a href="phenice-resources.html" style="color:rgba(253,252,248,0.5);text-decoration:none">Client Portal</a>
+    <a href="phenice-boykins-website.html#contact" style="color:rgba(253,252,248,0.5);text-decoration:none">Contact</a>
+  </div>
+  <p style="font-size:0.75rem;color:rgba(253,252,248,0.35);margin-top:12px">2025 Phenice Boykins · Samson Properties · <a href="tel:8044820402" style="color:rgba(253,252,248,0.35);text-decoration:none">(804) 482-0402</a> · <a href="mailto:phenicebsellsrva@gmail.com" style="color:rgba(253,252,248,0.35);text-decoration:none">phenicebsellsrva@gmail.com</a></p>
+</footer>
+</body>
+</html>

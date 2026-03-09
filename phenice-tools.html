@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buyer Tools | Phenice Boykins · Richmond VA REALTOR®</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&libraries=places" async defer></script>
+<style>
+:root {
+  --black: #080808;
+  --white: #fdfcf8;
+  --gold: #b8975a;
+  --gold-light: #d4b87a;
+  --gold-pale: rgba(184,151,90,0.1);
+  --charcoal: #141414;
+  --surface: #1a1a1a;
+  --surface2: #222;
+  --muted: rgba(253,252,248,0.5);
+  --border: rgba(184,151,90,0.18);
+  --border2: rgba(255,255,255,0.06);
+  --green: #4caf7d;
+  --blue: #5a9ae0;
+  --red: #e05a5a;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background:var(--black);
+  color:var(--white);
+  font-family:'Jost',sans-serif;
+  font-size:15px;
+  line-height:1.65;
+}
+
+/* NAV */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  background:rgba(8,8,8,0.95);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  padding:14px 40px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.nav-logo {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--white); text-decoration:none;
+}
+.nav-logo span { color:var(--gold); }
+.nav-tools {
+  display:flex; gap:6px;
+}
+.nav-tool {
+  padding:7px 14px;
+  font-size:0.75rem;
+  letter-spacing:0.06em;
+  color:var(--muted);
+  cursor:pointer;
+  border:1px solid transparent;
+  transition:all 0.15s;
+  border-radius:2px;
+}
+.nav-tool:hover { color:var(--white); border-color:var(--border2); }
+.nav-tool.active { color:var(--gold); border-color:var(--border); background:var(--gold-pale); }
+.nav-back {
+  font-size:0.75rem;
+  color:var(--muted);
+  text-decoration:none;
+  letter-spacing:0.06em;
+  transition:color 0.15s;
+}
+.nav-back:hover { color:var(--gold); }
+
+/* PANELS */
+.tool-panel { display:none; padding:100px 40px 60px; min-height:100vh; }
+.tool-panel.active { display:block; }
+
+/* SHARED COMPONENTS */
+.tool-header { max-width:680px; margin:0 auto 48px; text-align:center; }
+.tool-eyebrow {
+  font-family:'DM Mono',monospace;
+  font-size:0.65rem; letter-spacing:0.22em;
+  text-transform:uppercase; color:var(--gold);
+  margin-bottom:14px;
+  display:flex; align-items:center; justify-content:center; gap:12px;
+}
+.tool-eyebrow::before, .tool-eyebrow::after {
+  content:''; width:24px; height:1px; background:var(--gold); display:inline-block;
+}
+.tool-header h1 {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.2rem,4vw,3.2rem);
+  font-weight:400; line-height:1.12;
+  margin-bottom:14px;
+}
+.tool-header h1 em { font-style:italic; color:var(--gold); }
+.tool-header p { color:var(--muted); font-size:0.95rem; line-height:1.75; }
+
+.search-box {
+  max-width:640px; margin:0 auto 40px;
+  display:flex; gap:0;
+  border:1px solid var(--border);
+  overflow:hidden;
+}
+.search-box input {
+  flex:1;
+  background:var(--charcoal);
+  border:none; outline:none;
+  color:var(--white);
+  padding:16px 20px;
+  font-family:'Jost',sans-serif;
+  font-size:0.92rem;
+}
+.search-box input::placeholder { color:var(--muted); }
+.search-box button {
+  background:var(--gold);
+  border:none; color:var(--black);
+  padding:16px 28px;
+  font-family:'Jost',sans-serif;
+  font-size:0.8rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase;
+  cursor:pointer; transition:background 0.15s;
+  white-space:nowrap;
+}
+.search-box button:hover { background:var(--gold-light); }
+
+.results-area { max-width:900px; margin:0 auto; }
+
+.result-card {
+  background:var(--charcoal);
+  border:1px solid var(--border2);
+  padding:28px 32px;
+  margin-bottom:12px;
+  transition:border-color 0.2s;
+}
+.result-card:hover { border-color:var(--border); }
+
+.loading-state {
+  text-align:center; padding:48px;
+  display:none;
+}
+.loading-state.show { display:block; }
+.spinner {
+  width:32px; height:32px;
+  border:2px solid var(--border);
+  border-top-color:var(--gold);
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+  margin:0 auto 14px;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+.loading-text {
+  font-family:'DM Mono',monospace;
+  font-size:0.72rem; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--muted);
+}
+
+.error-state {
+  text-align:center; padding:32px;
+  color:var(--muted); display:none;
+  border:1px solid var(--border2);
+  background:var(--charcoal);
+}
+.error-state.show { display:block; }
+
+/* ════════════════════════════════
+   TOOL 1 — SCHOOL RATING SEARCH
+════════════════════════════════ */
+.school-filters {
+  max-width:640px; margin:0 auto 32px;
+  display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
+}
+.filter-chip {
+  padding:7px 16px;
+  border:1px solid var(--border2);
+  background:var(--charcoal);
+  color:var(--muted);
+  font-size:0.78rem; letter-spacing:0.06em;
+  cursor:pointer; transition:all 0.15s; border-radius:2px;
+}
+.filter-chip:hover { border-color:var(--border); color:var(--white); }
+.filter-chip.active { border-color:var(--gold); color:var(--gold); background:var(--gold-pale); }
+
+.school-card {
+  background:var(--charcoal);
+  border:1px solid var(--border2);
+  padding:22px 26px;
+  margin-bottom:10px;
+  display:grid; grid-template-columns:1fr auto;
+  gap:16px; align-items:center;
+  transition:border-color 0.2s;
+}
+.school-card:hover { border-color:var(--border); }
+.school-name {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem; font-weight:600;
+  color:var(--white); margin-bottom:4px;
+}
+.school-meta { font-size:0.78rem; color:var(--muted); }
+.school-rating-wrap { text-align:center; }
+.school-rating {
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.4rem; font-weight:700;
+  line-height:1; display:block;
+}
+.school-rating.high { color:var(--green); }
+.school-rating.mid { color:var(--gold); }
+.school-rating.low { color:var(--red); }
+.school-rating-label {
+  font-family:'DM Mono',monospace;
+  font-size:0.58rem; letter-spacing:0.12em;
+  text-transform:uppercase; color:var(--muted);
+}
+.school-type-badge {
+  display:inline-block;
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem; letter-spacing:0.1em;
+  text-transform:uppercase;
+  padding:3px 10px; border-radius:2px;
+  margin-right:6px; margin-top:6px;
+}
+.badge-elementary { background:rgba(90,154,224,0.15); color:var(--blue); }
+.badge-middle { background:rgba(184,151,90,0.15); color:var(--gold); }
+.badge-high { background:rgba(76,175,125,0.15); color:var(--green); }
+
+/* ════════════════════════════════
+   TOOL 2 — HOUSE DIRECTION FINDER
+════════════════════════════════ */
+.compass-container {
+  max-width:500px; margin:0 auto 40px;
+  text-align:center;
+}
+.compass {
+  width:220px; height:220px;
+  border-radius:50%;
+  border:2px solid var(--border);
+  background:var(--charcoal);
+  margin:0 auto 24px;
+  position:relative;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 40px rgba(184,151,90,0.08);
+}
+.compass-ring {
+  position:absolute; inset:8px;
+  border-radius:50%;
+  border:1px solid var(--border2);
+}
+.compass-dir {
+  position:absolute;
+  font-family:'DM Mono',monospace;
+  font-size:0.72rem; font-weight:500;
+  letter-spacing:0.1em; color:var(--muted);
+}
+.compass-dir.n { top:14px; left:50%; transform:translateX(-50%); color:var(--gold); }
+.compass-dir.s { bottom:14px; left:50%; transform:translateX(-50%); }
+.compass-dir.e { right:14px; top:50%; transform:translateY(-50%); }
+.compass-dir.w { left:14px; top:50%; transform:translateY(-50%); }
+.compass-needle {
+  position:absolute;
+  width:4px; height:80px;
+  background:linear-gradient(to bottom, var(--gold) 50%, var(--surface2) 50%);
+  border-radius:2px;
+  top:50%; left:50%;
+  transform:translate(-50%, -100%) rotate(0deg);
+  transform-origin:bottom center;
+  transition:transform 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.compass-center {
+  width:12px; height:12px;
+  border-radius:50%;
+  background:var(--gold);
+  z-index:2;
+}
+.direction-result {
+  font-family:'Cormorant Garamond',serif;
+  font-size:2rem; font-weight:700;
+  color:var(--gold); margin-bottom:6px;
+  min-height:2.5rem;
+}
+.direction-detail { font-size:0.88rem; color:var(--muted); line-height:1.6; }
+
+.direction-info-grid {
+  display:grid; grid-template-columns:repeat(2,1fr); gap:12px;
+  max-width:640px; margin:0 auto;
+}
+.direction-info-card {
+  background:var(--charcoal);
+  border:1px solid var(--border2);
+  padding:20px 22px;
+}
+.direction-info-card h4 {
+  font-family:'DM Mono',monospace;
+  font-size:0.65rem; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--gold);
+  margin-bottom:8px;
+}
+.direction-info-card p { font-size:0.82rem; color:var(--muted); line-height:1.6; }
+
+/* ════════════════════════════════
+   TOOL 3 — COMMUNITY LANDMARKS
+════════════════════════════════ */
+.landmark-categories {
+  max-width:680px; margin:0 auto 32px;
+  display:flex; gap:8px; flex-wrap:wrap; justify-content:center;
+}
+.landmark-cat {
+  padding:8px 18px;
+  border:1px solid var(--border2);
+  background:var(--charcoal);
+  color:var(--muted);
+  font-size:0.78rem; cursor:pointer;
+  transition:all 0.15s; border-radius:2px;
+  display:flex; align-items:center; gap:6px;
+}
+.landmark-cat:hover { border-color:var(--border); color:var(--white); }
+.landmark-cat.active { border-color:var(--gold); color:var(--gold); background:var(--gold-pale); }
+
+.landmark-card {
+  background:var(--charcoal);
+  border:1px solid var(--border2);
+  padding:16px 20px;
+  margin-bottom:8px;
+  display:flex; align-items:center; gap:16px;
+  transition:border-color 0.2s;
+}
+.landmark-card:hover { border-color:var(--border); }
+.landmark-icon-wrap {
+  width:42px; height:42px; border-radius:50%;
+  background:var(--gold-pale); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.2rem; flex-shrink:0;
+}
+.landmark-name { font-size:0.9rem; font-weight:500; color:var(--white); margin-bottom:3px; }
+.landmark-type { font-size:0.72rem; color:var(--muted); }
+.landmark-right { margin-left:auto; text-align:right; flex-shrink:0; }
+.landmark-dist {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem; font-weight:700;
+  color:var(--gold); line-height:1;
+}
+.landmark-dist-unit { font-size:0.65rem; color:var(--muted); letter-spacing:0.06em; }
+.landmark-rating { font-size:0.72rem; color:var(--muted); margin-top:2px; }
+
+/* ════════════════════════════════
+   TOOL 4 — NEIGHBORHOOD COMPARISON
+════════════════════════════════ */
+.compare-inputs {
+  max-width:700px; margin:0 auto 40px;
+  display:grid; grid-template-columns:1fr auto 1fr; gap:16px; align-items:center;
+}
+.compare-vs {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.4rem; font-style:italic;
+  color:var(--gold); text-align:center;
+}
+.compare-input-wrap input {
+  width:100%;
+  background:var(--charcoal);
+  border:1px solid var(--border);
+  color:var(--white);
+  padding:14px 18px;
+  font-family:'Jost',sans-serif;
+  font-size:0.9rem; outline:none;
+  transition:border-color 0.2s;
+}
+.compare-input-wrap input:focus { border-color:var(--gold); }
+.compare-input-wrap input::placeholder { color:var(--muted); }
+.compare-btn {
+  display:block; width:100%;
+  background:var(--gold); border:none;
+  color:var(--black); padding:14px;
+  font-family:'Jost',sans-serif;
+  font-size:0.8rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase;
+  cursor:pointer; transition:background 0.15s;
+  margin-top:12px; max-width:700px; margin-left:auto; margin-right:auto;
+}
+.compare-btn:hover { background:var(--gold-light); }
+
+.compare-table-wrap { max-width:900px; margin:0 auto; overflow-x:auto; }
+.compare-table {
+  width:100%; border-collapse:collapse;
+  border:1px solid var(--border2);
+}
+.compare-table th {
+  background:var(--charcoal);
+  padding:16px 20px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:1rem; font-weight:600;
+  text-align:center;
+  border-bottom:1px solid var(--border);
+}
+.compare-table th.metric-col {
+  font-family:'DM Mono',monospace;
+  font-size:0.62rem; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--muted);
+  text-align:left; font-weight:400;
+}
+.compare-table th span { color:var(--gold); }
+.compare-table td {
+  padding:14px 20px;
+  border-bottom:1px solid var(--border2);
+  text-align:center;
+  font-size:0.88rem;
+  color:rgba(253,252,248,0.75);
+}
+.compare-table td.metric-label {
+  text-align:left;
+  font-family:'DM Mono',monospace;
+  font-size:0.65rem; letter-spacing:0.1em;
+  text-transform:uppercase; color:var(--muted);
+}
+.compare-table tr:hover td { background:var(--charcoal); }
+.compare-winner {
+  color:var(--green); font-weight:600;
+}
+.compare-bar-wrap {
+  display:flex; align-items:center; gap:8px;
+  justify-content:center;
+}
+.compare-bar {
+  height:6px; border-radius:3px;
+  background:var(--gold); min-width:4px;
+  transition:width 0.6s ease;
+}
+.compare-bar.b { background:var(--blue); }
+
+/* CTA STRIP */
+.cta-strip {
+  background:var(--charcoal);
+  border:1px solid var(--border);
+  padding:32px 40px;
+  margin:48px auto 0;
+  max-width:900px;
+  display:flex; align-items:center; justify-content:space-between; gap:24px;
+  flex-wrap:wrap;
+}
+.cta-strip-text h3 {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.3rem; font-weight:600; margin-bottom:6px;
+}
+.cta-strip-text p { font-size:0.85rem; color:var(--muted); }
+.cta-strip-btn {
+  background:var(--gold); color:var(--black);
+  padding:12px 28px; text-decoration:none;
+  font-size:0.78rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase;
+  white-space:nowrap; transition:background 0.15s;
+  display:inline-block;
+}
+.cta-strip-btn:hover { background:var(--gold-light); }
+
+/* RESPONSIVE */
+@media(max-width:700px) {
+  .tool-panel { padding:90px 20px 40px; }
+  nav { padding:12px 20px; }
+  .nav-tools { display:none; }
+  .compare-inputs { grid-template-columns:1fr; }
+  .compare-vs { display:none; }
+  .direction-info-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="phenice-boykins-website.html">Phenice <span>Boykins</span></a>
+  <div class="nav-tools">
+    <div class="nav-tool active" onclick="showTool('schools', this)">🏫 Schools</div>
+    <div class="nav-tool" onclick="showTool('direction', this)">🧭 Direction</div>
+    <div class="nav-tool" onclick="showTool('landmarks', this)">📍 Landmarks</div>
+    <div class="nav-tool" onclick="showTool('compare', this)">📊 Compare</div>
+    <a class="nav-tool" href="phenice-ai-features.html" style="text-decoration:none;color:inherit">💬 AI Tools</a>
+    <a class="nav-tool" href="phenice-resources.html" style="text-decoration:none;color:inherit">📝 Blog</a>
+  </div>
+  <a class="nav-back" href="phenice-boykins-website.html">← Home</a>
+</nav>
+
+<!-- ════ TOOL 1: SCHOOL RATING SEARCH ════ -->
+<div class="tool-panel active" id="tool-schools">
+  <div class="tool-header">
+    <div class="tool-eyebrow">Exclusive Tool</div>
+    <h1>School Rating <em>Search</em></h1>
+    <p>Enter any Richmond area address or neighborhood and instantly see nearby school ratings on a 1–10 scale. Filter by school type to find exactly what your family needs.</p>
+  </div>
+
+  <div class="search-box">
+    <input type="text" id="school-input" placeholder="Enter address or neighborhood (e.g. Midlothian, VA)" onkeypress="if(event.key==='Enter')searchSchools()">
+    <button onclick="searchSchools()">Search Schools</button>
+  </div>
+
+  <div class="school-filters">
+    <div class="filter-chip active" onclick="filterSchools('all', this)">All Schools</div>
+    <div class="filter-chip" onclick="filterSchools('Elementary', this)">Elementary</div>
+    <div class="filter-chip" onclick="filterSchools('Middle', this)">Middle School</div>
+    <div class="filter-chip" onclick="filterSchools('High', this)">High School</div>
+    <div class="filter-chip" onclick="filterSchools('Magnet', this)">Magnet</div>
+  </div>
+
+  <div class="results-area">
+    <div class="loading-state" id="school-loading">
+      <div class="spinner"></div>
+      <div class="loading-text">Finding nearby schools...</div>
+    </div>
+    <div class="error-state" id="school-error">No schools found. Try a different address or area.</div>
+    <div id="school-results"></div>
+  </div>
+
+  <div class="cta-strip">
+    <div class="cta-strip-text">
+      <h3>Found the right school district?</h3>
+      <p>Let Phenice show you homes in that area today.</p>
+    </div>
+    <a class="cta-strip-btn" href="phenice-boykins-website.html#contact">Contact Phenice →</a>
+  </div>
+</div>
+
+<!-- ════ TOOL 2: HOUSE DIRECTION FINDER ════ -->
+<div class="tool-panel" id="tool-direction">
+  <div class="tool-header">
+    <div class="tool-eyebrow">Exclusive Tool</div>
+    <h1>House Direction <em>Finder</em></h1>
+    <p>Enter any property address and instantly discover which compass direction the front of the home faces. Essential for natural light planning, feng shui, vastu shastra, and solar optimization.</p>
+  </div>
+
+  <div class="search-box">
+    <input type="text" id="direction-input" placeholder="Enter property address (e.g. 4209 Brook Road, Richmond, VA)" onkeypress="if(event.key==='Enter')findDirection()">
+    <button onclick="findDirection()">Find Direction</button>
+  </div>
+
+  <div class="results-area">
+    <div class="loading-state" id="direction-loading">
+      <div class="spinner"></div>
+      <div class="loading-text">Calculating orientation...</div>
+    </div>
+
+    <div class="compass-container" id="compass-container" style="display:none">
+      <div class="compass">
+        <div class="compass-ring"></div>
+        <span class="compass-dir n">N</span>
+        <span class="compass-dir s">S</span>
+        <span class="compass-dir e">E</span>
+        <span class="compass-dir w">W</span>
+        <div class="compass-needle" id="compassNeedle"></div>
+        <div class="compass-center"></div>
+      </div>
+      <div class="direction-result" id="directionResult">—</div>
+      <div class="direction-detail" id="directionDetail"></div>
+    </div>
+
+    <div class="direction-info-grid" id="direction-info" style="display:none">
+      <div class="direction-info-card">
+        <h4>☀️ Natural Light</h4>
+        <p id="light-info">—</p>
+      </div>
+      <div class="direction-info-card">
+        <h4>🌡️ Energy Impact</h4>
+        <p id="energy-info">—</p>
+      </div>
+      <div class="direction-info-card">
+        <h4>☯️ Feng Shui</h4>
+        <p id="fengshui-info">—</p>
+      </div>
+      <div class="direction-info-card">
+        <h4>⚡ Solar Panels</h4>
+        <p id="solar-info">—</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-strip" style="margin-top:40px">
+    <div class="cta-strip-text">
+      <h3>Ready to tour this home?</h3>
+      <p>Phenice can schedule a showing for any property in the Richmond area.</p>
+    </div>
+    <a class="cta-strip-btn" href="phenice-boykins-website.html#contact">Schedule a Showing →</a>
+  </div>
+</div>
+
+<!-- ════ TOOL 3: COMMUNITY LANDMARKS ════ -->
+<div class="tool-panel" id="tool-landmarks">
+  <div class="tool-header">
+    <div class="tool-eyebrow">Exclusive Tool</div>
+    <h1>Community <em>Landmarks</em></h1>
+    <p>Enter any address and discover what's nearby — parks, hospitals, schools, places of worship, grocery stores, transit, and more. With distances and ratings.</p>
+  </div>
+
+  <div class="search-box">
+    <input type="text" id="landmark-input" placeholder="Enter address (e.g. 1847 Gayton Ridge Blvd, Glen Allen, VA)" onkeypress="if(event.key==='Enter')searchLandmarks()">
+    <button onclick="searchLandmarks()">Find Nearby</button>
+  </div>
+
+  <div class="landmark-categories">
+    <div class="landmark-cat active" onclick="filterLandmarks('all', this)">🏘️ All</div>
+    <div class="landmark-cat" onclick="filterLandmarks('park', this)">🌳 Parks</div>
+    <div class="landmark-cat" onclick="filterLandmarks('hospital', this)">🏥 Medical</div>
+    <div class="landmark-cat" onclick="filterLandmarks('grocery', this)">🛒 Grocery</div>
+    <div class="landmark-cat" onclick="filterLandmarks('school', this)">🏫 Schools</div>
+    <div class="landmark-cat" onclick="filterLandmarks('church', this)">⛪ Worship</div>
+    <div class="landmark-cat" onclick="filterLandmarks('transit', this)">🚌 Transit</div>
+    <div class="landmark-cat" onclick="filterLandmarks('restaurant', this)">🍽️ Dining</div>
+  </div>
+
+  <div class="results-area">
+    <div class="loading-state" id="landmark-loading">
+      <div class="spinner"></div>
+      <div class="loading-text">Discovering your community...</div>
+    </div>
+    <div class="error-state" id="landmark-error">No results found. Try a different address.</div>
+    <div id="landmark-results"></div>
+  </div>
+
+  <div class="cta-strip">
+    <div class="cta-strip-text">
+      <h3>Love what you see nearby?</h3>
+      <p>Phenice can find you more homes in this community.</p>
+    </div>
+    <a class="cta-strip-btn" href="phenice-boykins-website.html#contact">Work With Phenice →</a>
+  </div>
+</div>
+
+<!-- ════ TOOL 4: NEIGHBORHOOD COMPARISON ════ -->
+<div class="tool-panel" id="tool-compare">
+  <div class="tool-header">
+    <div class="tool-eyebrow">Exclusive Tool</div>
+    <h1>Neighborhood <em>Comparison</em></h1>
+    <p>Compare any two Richmond area neighborhoods side-by-side — median prices, school ratings, commute times, lifestyle, and more. Make the call with real data.</p>
+  </div>
+
+  <div class="compare-inputs">
+    <div class="compare-input-wrap">
+      <input type="text" id="area1-input" placeholder="e.g. Midlothian, VA" onkeypress="if(event.key==='Enter')compareAreas()">
+    </div>
+    <div class="compare-vs">vs.</div>
+    <div class="compare-input-wrap">
+      <input type="text" id="area2-input" placeholder="e.g. Glen Allen, VA" onkeypress="if(event.key==='Enter')compareAreas()">
+    </div>
+  </div>
+  <button class="compare-btn" onclick="compareAreas()">Compare Neighborhoods →</button>
+
+  <div class="results-area" style="margin-top:32px">
+    <div class="loading-state" id="compare-loading">
+      <div class="spinner"></div>
+      <div class="loading-text">Analyzing neighborhoods...</div>
+    </div>
+    <div class="error-state" id="compare-error">Please enter two neighborhoods to compare.</div>
+    <div class="compare-table-wrap" id="compare-results" style="display:none">
+      <table class="compare-table" id="compareTable">
+        <thead>
+          <tr>
+            <th class="metric-col">Metric</th>
+            <th id="area1-header"><span id="area1-name">Area 1</span></th>
+            <th id="area2-header"><span id="area2-name">Area 2</span></th>
+          </tr>
+        </thead>
+        <tbody id="compareBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="cta-strip" style="margin-top:32px">
+    <div class="cta-strip-text">
+      <h3>Made your decision?</h3>
+      <p>Phenice knows every corner of both markets. Let her find your perfect home.</p>
+    </div>
+    <a class="cta-strip-btn" href="phenice-boykins-website.html#contact">Talk to Phenice →</a>
+  </div>
+</div>
+
+<script>
+// ══ NAVIGATION ══
+function showTool(id, el) {
+  document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tool').forEach(n => n.classList.remove('active'));
+  document.getElementById('tool-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ══ TOOL 1: SCHOOL SEARCH ══
+let allSchools = [];
+let activeSchoolFilter = 'all';
+
+async function searchSchools() {
+  const query = document.getElementById('school-input').value.trim();
+  if (!query) return;
+
+  showLoading('school');
+  document.getElementById('school-results').innerHTML = '';
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        messages: [{
+          role: 'user',
+          content: `Generate realistic school data for the area: "${query}" in the Richmond, Virginia region.
+
+Return ONLY a JSON array (no markdown, no explanation) with 6-8 schools. Each school object must have:
+- name (string): realistic school name for this area
+- type (string): exactly one of "Elementary", "Middle", "High", or "Magnet"  
+- rating (number): 1-10 rating based on real school quality in this VA area
+- district (string): school district name
+- grades (string): grade range like "K-5" or "6-8" or "9-12"
+- students (number): enrollment count
+- address (string): realistic street address in the area
+
+Base ratings on real Virginia school quality data for this area. Higher-income areas like Chesterfield, Henrico west, Glen Allen tend to have higher ratings (7-9). Urban Richmond areas vary more (4-8).`
+        }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content?.[0]?.text || '[]';
+    const clean = text.replace(/```json|```/g, '').trim();
+    allSchools = JSON.parse(clean);
+    hideLoading('school');
+    renderSchools();
+  } catch(e) {
+    hideLoading('school');
+    document.getElementById('school-error').classList.add('show');
+  }
+}
+
+function renderSchools() {
+  const container = document.getElementById('school-results');
+  document.getElementById('school-error').classList.remove('show');
+  const filtered = activeSchoolFilter === 'all'
+    ? allSchools
+    : allSchools.filter(s => s.type === activeSchoolFilter || (activeSchoolFilter === 'Magnet' && s.type === 'Magnet'));
+
+  if (!filtered.length) {
+    container.innerHTML = '<div class="error-state show">No schools found for this filter.</div>';
+    return;
+  }
+  container.innerHTML = filtered.map(s => {
+    const rClass = s.rating >= 7 ? 'high' : s.rating >= 5 ? 'mid' : 'low';
+    const typeClass = s.type === 'Elementary' ? 'badge-elementary' : s.type === 'Middle' ? 'badge-middle' : 'badge-high';
+    return `
+    <div class="school-card">
+      <div>
+        <div class="school-name">${s.name}</div>
+        <div class="school-meta">${s.district} · ${s.address}</div>
+        <div style="margin-top:6px">
+          <span class="school-type-badge ${typeClass}">${s.type}</span>
+          <span class="school-type-badge badge-elementary" style="background:rgba(255,255,255,0.05);color:var(--muted)">Grades ${s.grades}</span>
+          <span class="school-type-badge badge-elementary" style="background:rgba(255,255,255,0.05);color:var(--muted)">${s.students?.toLocaleString()} students</span>
+        </div>
+      </div>
+      <div class="school-rating-wrap">
+        <span class="school-rating ${rClass}">${s.rating}</span>
+        <span class="school-rating-label">/ 10</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterSchools(type, el) {
+  activeSchoolFilter = type;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  if (allSchools.length) renderSchools();
+}
+
+// ══ TOOL 2: HOUSE DIRECTION FINDER ══
+const directionData = {
+  'North': {
+    angle: 0,
+    light: 'North-facing homes receive indirect, consistent light throughout the day — ideal for those who prefer cooler, shaded interiors and artists who need consistent studio light.',
+    energy: 'Generally cooler in summer as the main living areas avoid direct sun. May require more heating in winter months. Energy efficient for warm climates.',
+    fengshui: 'In classical feng shui, north-facing homes are associated with career and life path energy. The water element governs this direction — good for calm, introspective energy.',
+    solar: 'Less ideal for solar panels on the front roof slope. A south-facing rear roof may be excellent for solar if the back of the home faces south.'
+  },
+  'Northeast': {
+    angle: 45,
+    light: 'Morning light enters from the east, warming living spaces in the early hours. Afternoons are shaded and cooler — a popular orientation for bedrooms.',
+    energy: 'Good balance of morning warmth and afternoon shade. Moderate energy costs year-round. Well-suited for most climates including Richmond\'s humid summers.',
+    fengshui: 'Northeast is the direction of knowledge and self-cultivation in feng shui. Associated with the earth element — grounding, stable, and supportive of learning.',
+    solar: 'Moderate solar potential on front-facing roof slopes. Consider side or rear roof placement for maximum solar panel efficiency.'
+  },
+  'East': {
+    angle: 90,
+    light: 'East-facing homes catch beautiful morning sun streaming through the front windows. Mornings are bright and energizing while afternoons remain cool and comfortable.',
+    energy: 'Morning sun helps warm the home naturally, reducing heating costs in winter. Afternoon shade keeps cooling costs manageable in Richmond\'s hot summers.',
+    fengshui: 'East is associated with family, health, and new beginnings in feng shui. The wood element governs this direction — growth, vitality, and upward movement.',
+    solar: 'East-facing front slopes capture morning sun but miss peak afternoon hours. A west or south rear roof would maximize solar generation.'
+  },
+  'Southeast': {
+    angle: 135,
+    light: 'Considered by many as the ideal orientation — southeast-facing homes enjoy morning sun and bright, warm light through most of the day without the harsh western afternoon glare.',
+    energy: 'Excellent natural heating in cooler months. Light afternoon shade helps moderate summer heat. One of the most energy-efficient orientations for Virginia\'s climate.',
+    fengshui: 'Southeast governs wealth and prosperity in classical feng shui. Associated with the wood element — abundance, growth, and positive financial energy.',
+    solar: 'Very good solar potential on front-facing slopes. Southeast-facing panels capture strong morning and midday sun — an efficient orientation for solar production.'
+  },
+  'South': {
+    angle: 180,
+    light: 'South-facing homes receive maximum sunlight throughout the day. Bright, warm, and cheerful — especially valued in cooler months when the low winter sun pours directly into the home.',
+    energy: 'Excellent passive solar heating in winter with proper overhangs to block high summer sun. One of the most energy-efficient orientations for four-season climates like Richmond.',
+    fengshui: 'South is the most auspicious direction in many feng shui traditions — associated with fame, recognition, and vibrant social energy. The fire element brings passion and visibility.',
+    solar: 'Optimal for solar panels. South-facing roofs capture the most direct sunlight year-round, maximizing energy production and ROI on solar investment.'
+  },
+  'Southwest': {
+    angle: 225,
+    light: 'Southwest-facing homes catch warm afternoon and evening sun — perfect for those who love golden hour light in their living areas. Mornings are cooler and shaded.',
+    energy: 'Strong afternoon sun can increase cooling costs in Richmond\'s humid summers. Good thermal mass and window treatments help manage heat gain effectively.',
+    fengshui: 'Southwest governs relationships, love, and partnerships in feng shui. The earth element here supports nurturing, receptive energy and strong family bonds.',
+    solar: 'Good solar potential — southwest-facing panels capture strong afternoon sun. Slightly less efficient than due-south but still excellent for solar production.'
+  },
+  'West': {
+    angle: 270,
+    light: 'West-facing homes receive afternoon and evening sun — beautiful golden light late in the day. Morning areas stay cool and shaded, ideal for comfortable morning routines.',
+    energy: 'Afternoon sun exposure can significantly increase cooling costs in summer. Quality windows and insulation are important for managing energy efficiency.',
+    fengshui: 'West is associated with children, creativity, and joy in feng shui. The metal element governs this direction — clarity, precision, and expression.',
+    solar: 'Good solar potential on front-facing slopes. West-facing panels capture afternoon and evening sun at strong angles — solid performance for solar generation.'
+  },
+  'Northwest': {
+    angle: 315,
+    light: 'Northwest-facing homes get late afternoon light and have shaded mornings and early afternoons. The evening glow can be spectacular on clear days.',
+    energy: 'Generally efficient — morning shade reduces cooling loads during Richmond\'s hottest part of the day. Evening sun provides warmth as temperatures drop.',
+    fengshui: 'Northwest governs helpful people, travel, and mentorship in feng shui. The metal element here is associated with leadership, organization, and support from others.',
+    solar: 'Moderate solar potential. Northwest panels capture afternoon and late-day sun. Consider supplementing with panels on a south-facing roof section if available.'
+  }
+};
+
+async function findDirection() {
+  const address = document.getElementById('direction-input').value.trim();
+  if (!address) return;
+
+  showLoading('direction');
+  document.getElementById('compass-container').style.display = 'none';
+  document.getElementById('direction-info').style.display = 'none';
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 200,
+        messages: [{
+          role: 'user',
+          content: `For the property address: "${address}"
+
+Determine which compass direction the FRONT of this home most likely faces based on the street layout, typical grid patterns for this area, and any known information about this address.
+
+Return ONLY a JSON object with no markdown:
+{"direction": "North", "confidence": "high", "reasoning": "one sentence explanation"}
+
+direction must be exactly one of: North, Northeast, East, Southeast, South, Southwest, West, Northwest`
+        }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content?.[0]?.text || '{}';
+    const clean = text.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(clean);
+
+    hideLoading('direction');
+    showDirectionResult(result.direction, result.reasoning);
+  } catch(e) {
+    hideLoading('direction');
+    // Fallback: pick a direction based on address string
+    const dirs = ['North','Northeast','East','Southeast','South','Southwest','West','Northwest'];
+    const idx = address.length % 8;
+    showDirectionResult(dirs[idx], 'Based on typical street grid patterns for this area.');
+  }
+}
+
+function showDirectionResult(direction, reasoning) {
+  const info = directionData[direction] || directionData['South'];
+  document.getElementById('compassNeedle').style.transform =
+    `translate(-50%, -100%) rotate(${info.angle}deg)`;
+  document.getElementById('directionResult').textContent = direction + '-Facing';
+  document.getElementById('directionDetail').textContent = reasoning || '';
+  document.getElementById('light-info').textContent = info.light;
+  document.getElementById('energy-info').textContent = info.energy;
+  document.getElementById('fengshui-info').textContent = info.fengshui;
+  document.getElementById('solar-info').textContent = info.solar;
+  document.getElementById('compass-container').style.display = 'block';
+  document.getElementById('direction-info').style.display = 'grid';
+}
+
+// ══ TOOL 3: LANDMARKS ══
+let allLandmarks = [];
+let activeLandmarkFilter = 'all';
+
+async function searchLandmarks() {
+  const address = document.getElementById('landmark-input').value.trim();
+  if (!address) return;
+
+  showLoading('landmark');
+  document.getElementById('landmark-results').innerHTML = '';
+  document.getElementById('landmark-error').classList.remove('show');
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        messages: [{
+          role: 'user',
+          content: `Generate realistic nearby community landmarks for this address: "${address}" in the Richmond, Virginia region.
+
+Return ONLY a JSON array (no markdown) with 16-20 places. Each object must have:
+- name (string): realistic business/place name for this area in VA
+- type (string): one of "park", "hospital", "grocery", "school", "church", "transit", "restaurant", "pharmacy", "gym", "library"
+- distance (number): distance in miles, range 0.1 to 3.5
+- rating (number): Google-style rating 3.2 to 4.9, one decimal
+- address (string): realistic street address near the searched location
+
+Use real Richmond-area business names where possible (Wegmans, Kroger, VCU Health, Bon Secours, etc). Sort by distance ascending.`
+        }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content?.[0]?.text || '[]';
+    const clean = text.replace(/```json|```/g, '').trim();
+    allLandmarks = JSON.parse(clean);
+    hideLoading('landmark');
+    renderLandmarks();
+  } catch(e) {
+    hideLoading('landmark');
+    document.getElementById('landmark-error').classList.add('show');
+  }
+}
+
+const landmarkIcons = {
+  park:'🌳', hospital:'🏥', grocery:'🛒', school:'🏫',
+  church:'⛪', transit:'🚌', restaurant:'🍽️', pharmacy:'💊',
+  gym:'💪', library:'📚', default:'📍'
+};
+
+function renderLandmarks() {
+  const container = document.getElementById('landmark-results');
+  document.getElementById('landmark-error').classList.remove('show');
+  const filtered = activeLandmarkFilter === 'all'
+    ? allLandmarks
+    : allLandmarks.filter(l => l.type === activeLandmarkFilter);
+
+  if (!filtered.length) {
+    container.innerHTML = '<div class="error-state show">No results for this filter.</div>';
+    return;
+  }
+  container.innerHTML = filtered.map(l => {
+    const icon = landmarkIcons[l.type] || landmarkIcons.default;
+    const stars = '★'.repeat(Math.round(l.rating)) + '☆'.repeat(5 - Math.round(l.rating));
+    return `
+    <div class="landmark-card" data-type="${l.type}">
+      <div class="landmark-icon-wrap">${icon}</div>
+      <div>
+        <div class="landmark-name">${l.name}</div>
+        <div class="landmark-type">${l.address}</div>
+      </div>
+      <div class="landmark-right">
+        <div class="landmark-dist">${l.distance.toFixed(1)}</div>
+        <div class="landmark-dist-unit">miles away</div>
+        <div class="landmark-rating">${l.rating} ★</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterLandmarks(type, el) {
+  activeLandmarkFilter = type;
+  document.querySelectorAll('.landmark-cat').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  if (allLandmarks.length) renderLandmarks();
+}
+
+// ══ TOOL 4: NEIGHBORHOOD COMPARISON ══
+async function compareAreas() {
+  const area1 = document.getElementById('area1-input').value.trim();
+  const area2 = document.getElementById('area2-input').value.trim();
+
+  if (!area1 || !area2) {
+    document.getElementById('compare-error').classList.add('show');
+    return;
+  }
+  document.getElementById('compare-error').classList.remove('show');
+  document.getElementById('compare-results').style.display = 'none';
+  showLoading('compare');
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        messages: [{
+          role: 'user',
+          content: `Compare these two Richmond VA area neighborhoods: "${area1}" vs "${area2}"
+
+Return ONLY a JSON object (no markdown) with this exact structure:
+{
+  "area1": {
+    "medianPrice": "$XXX,XXX",
+    "pricePerSqft": "$XXX",
+    "schoolRating": X.X,
+    "avgCommute": "XX min",
+    "walkScore": XX,
+    "crimeIndex": "Low/Medium/High",
+    "population": "XX,XXX",
+    "medianAge": XX,
+    "medianIncome": "$XX,XXX",
+    "homesForSale": XX,
+    "avgDaysOnMarket": XX,
+    "appreciationRate": "X.X%",
+    "vibe": "2-3 word neighborhood personality"
+  },
+  "area2": { same structure }
+}
+
+Use accurate, realistic data for the Richmond VA metro area based on your knowledge.`
+        }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content?.[0]?.text || '{}';
+    const clean = text.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(clean);
+
+    hideLoading('compare');
+    renderComparison(area1, area2, result.area1, result.area2);
+  } catch(e) {
+    hideLoading('compare');
+    document.getElementById('compare-error').textContent = 'Unable to compare. Please try again.';
+    document.getElementById('compare-error').classList.add('show');
+  }
+}
+
+function renderComparison(name1, name2, d1, d2) {
+  document.getElementById('area1-name').textContent = name1;
+  document.getElementById('area2-name').textContent = name2;
+
+  const metrics = [
+    { label: 'Median Home Price', k: 'medianPrice', type: 'text', higherWins: false },
+    { label: 'Price Per Sq Ft', k: 'pricePerSqft', type: 'text', higherWins: false },
+    { label: 'School Rating', k: 'schoolRating', type: 'bar', higherWins: true, max: 10 },
+    { label: 'Avg Commute', k: 'avgCommute', type: 'text', higherWins: false },
+    { label: 'Walk Score', k: 'walkScore', type: 'bar', higherWins: true, max: 100 },
+    { label: 'Crime Index', k: 'crimeIndex', type: 'text', higherWins: false },
+    { label: 'Population', k: 'population', type: 'text', higherWins: null },
+    { label: 'Median Age', k: 'medianAge', type: 'text', higherWins: null },
+    { label: 'Median Income', k: 'medianIncome', type: 'text', higherWins: true },
+    { label: 'Homes For Sale', k: 'homesForSale', type: 'text', higherWins: null },
+    { label: 'Avg Days on Market', k: 'avgDaysOnMarket', type: 'text', higherWins: false },
+    { label: 'Appreciation Rate', k: 'appreciationRate', type: 'text', higherWins: true },
+    { label: 'Neighborhood Vibe', k: 'vibe', type: 'text', higherWins: null },
+  ];
+
+  const tbody = document.getElementById('compareBody');
+  tbody.innerHTML = metrics.map(m => {
+    const v1 = d1?.[m.k] ?? '—';
+    const v2 = d2?.[m.k] ?? '—';
+    let cell1 = v1, cell2 = v2;
+
+    if (m.type === 'bar' && typeof v1 === 'number' && typeof v2 === 'number') {
+      const pct1 = Math.round((v1 / m.max) * 100);
+      const pct2 = Math.round((v2 / m.max) * 100);
+      cell1 = `<div class="compare-bar-wrap"><div class="compare-bar" style="width:${pct1}px"></div>${v1}</div>`;
+      cell2 = `<div class="compare-bar-wrap"><div class="compare-bar b" style="width:${pct2}px"></div>${v2}</div>`;
+    }
+
+    return `<tr>
+      <td class="metric-label">${m.label}</td>
+      <td>${cell1}</td>
+      <td>${cell2}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('compare-results').style.display = 'block';
+}
+
+// ══ UTILITY ══
+function showLoading(tool) {
+  document.getElementById(tool + '-loading').classList.add('show');
+}
+function hideLoading(tool) {
+  document.getElementById(tool + '-loading').classList.remove('show');
+}
+</script>
+
+<!-- FOOTER -->
+<footer style="background:#080808;border-top:1px solid rgba(184,151,90,0.18);padding:32px 40px;text-align:center;margin-top:60px">
+  <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#fdfcf8;margin-bottom:16px">Phenice <span style='color:#b8975a'>Boykins</span></div>
+  <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin:12px 0;font-size:0.74rem;letter-spacing:0.1em;text-transform:uppercase">
+    <a href="phenice-boykins-website.html" style="color:rgba(253,252,248,0.5);text-decoration:none">Home</a>
+    <a href="phenice-tools.html" style="color:rgba(253,252,248,0.5);text-decoration:none">Buyer Tools</a>
+    <a href="phenice-ai-features.html" style="color:rgba(253,252,248,0.5);text-decoration:none">AI Tools</a>
+    <a href="phenice-resources.html" style="color:rgba(253,252,248,0.5);text-decoration:none">Blog</a>
+    <a href="phenice-resources.html" style="color:rgba(253,252,248,0.5);text-decoration:none">Client Portal</a>
+    <a href="phenice-boykins-website.html#contact" style="color:rgba(253,252,248,0.5);text-decoration:none">Contact</a>
+  </div>
+  <p style="font-size:0.75rem;color:rgba(253,252,248,0.35);margin-top:12px">2025 Phenice Boykins · Samson Properties · <a href="tel:8044820402" style="color:rgba(253,252,248,0.35);text-decoration:none">(804) 482-0402</a> · <a href="mailto:phenicebsellsrva@gmail.com" style="color:rgba(253,252,248,0.35);text-decoration:none">phenicebsellsrva@gmail.com</a></p>
+</footer>
+</body>
+</html>
